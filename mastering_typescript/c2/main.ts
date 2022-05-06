@@ -188,3 +188,105 @@ function printObjectType(obj: object) {
     console.log(`Obj: ${JSON.stringify(obj)}`);
 }
 printObjectType(structuredObject);
+
+//  Never type
+const enum AnEnum {
+    First,
+    Second
+}
+function getEnumValue(enumValue: AnEnum): string {
+    switch (enumValue) {
+        case AnEnum.First: return "First Case";
+        case AnEnum.Second: return "Second Case";
+    }
+    let returnValue: never = enumValue;
+    return returnValue
+}
+console.log(getEnumValue(AnEnum.First));
+console.log(getEnumValue(AnEnum.Second));
+
+//  Tuples
+//  Almost the same as Python, [] instead of ()
+//  ? could be used to mark an element as optional
+let tuple1: [string, boolean];
+let tuple2: [string, boolean?];
+tuple1 = ['Test', true];
+tuple2 = ['Test'];
+let [tuple1_string, tuple1_boolean] = tuple1;
+console.log(`tuple1[0] = ${tuple1[0]}, tuple1[1] = ${tuple1[1]}`);
+console.log(`tuple2[0] = ${tuple2[0]}, tuple2[1] = ${tuple2[1]}`);
+console.log(`tuple1[0] = ${tuple1_string}, tuple1[1] = ${tuple1_boolean}`);
+
+//  Object destructing
+
+let complexObject: {
+    aNum: number,
+    bStr: string,
+    cBool: boolean
+} = {
+    aNum: 1,
+    bStr: 'string',
+    cBool: true
+}
+
+let objId: number, objName: string, isValid: boolean;
+({aNum: objId, bStr: objName, cBool: isValid} = complexObject);
+
+console.log(objId);
+console.log(objName);
+console.log(isValid);
+
+
+//  Functions
+//  Optional parameters
+function concatValues(value_x: string, value_y?: string) {
+    console.log(value_x + value_y);
+}
+concatValues('hello', 'World');
+concatValues('hello');
+
+//  Rest Arguments
+function testArguments(...args: string[] | number[]) {
+    for (let i in args) {
+        console.log(`args[${i}] = ${args[i]}`);
+    }
+}
+testArguments('1', '2');
+testArguments(3, 4);
+
+//  Callback
+let myCallback = function (text) {
+    console.log("myCallback called with " + text);
+};
+
+function withCallbackArg(message, callbackFn) {
+    console.log("withCallback called, message: " + message);
+    callbackFn(message + " from withCallback");
+}
+withCallbackArg("Initial text", myCallback);
+
+//  Callback with signatures
+//  fat arrow syntax () =>
+function myCallback_(text:string): void {
+    console.log(`myCallback_ called with ${text}`);
+}
+function withCallbackArg_(
+    message: string,
+    callbackFn: (text: string) => void
+) {
+    console.log("withCallbackArg_ called, message: " + message);
+    callbackFn(message + " from withCallback_");
+}
+withCallbackArg_("Initial text", myCallback_);
+
+//  Literals
+//  It works as an enum
+type AllowedStringValues = "one" | "two" | "three";
+type AllowedNumericValues = 1 | 20 | 65535;
+function withLiteral(
+    input: AllowedStringValues | AllowedNumericValues
+): void {
+    console.log(`Called with: ${input}`);
+}
+withLiteral("one");
+withLiteral(1);
